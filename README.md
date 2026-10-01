@@ -23,7 +23,7 @@ The current vertical slice provides:
 - a TypeScript + React + Remotion project;
 - a versioned, Zod-validated scene manifest;
 - a sample scene: `The Observatory Above the Clouds`;
-- Remotion Studio preview with editable Zod-backed props;
+- Remotion Studio preview with editable, saveable Zod-backed props;
 - micro-animation parameters for camera push, horizontal drift, atmosphere, and light flicker;
 - a 30-second H.264 render command;
 - repository-policy tests, scene-schema tests, type checking, and CI;
@@ -80,6 +80,10 @@ TypeScript protects code written by developers, but future scene manifests may b
 **Remotion before a custom editor**
 
 Remotion already provides a capable Studio and programmatic render pipeline. Building a custom web editor before we know which creative controls matter would add product complexity too early. Studio v0.1 uses Remotion directly; a bespoke UI comes later only if the workflow proves it is useful.
+
+**Studio authoring defaults vs. the durable manifest**
+
+Remotion Studio can write edited default props back to source only when those props are statically readable in the `<Composition>` registration. The durable automation contract remains `scene.json`, but the sample composition mirrors those values as an inline literal so Studio can save edits. A test asserts that the Studio defaults and JSON manifest remain aligned. This is an intentional MVP bridge, not the intended long-term scene-authoring architecture; a later manifest editor/export path should remove the duplication.
 
 **Deterministic micro-animation**
 
@@ -150,7 +154,9 @@ Dependencies are currently pinned to exact versions in `package.json`. A committ
 npm run studio
 ```
 
-Open the local URL printed by Remotion. Select `MicroScene`. The composition's Zod schema exposes the scene properties in Remotion Studio, including the motion parameters.
+Open the local URL printed by Remotion. Select `MicroScene`. The composition's Zod schema exposes the scene properties in Remotion Studio, including the motion parameters. The sample composition uses statically readable default props so Studio can save edits back to `src/Root.tsx`.
+
+For the MVP, `src/scenes/observatory-above-clouds/scene.json` remains the durable manifest used by automation and tests. If Studio defaults are saved and intentionally changed, make the same change in `scene.json`; CI will fail if the two representations drift.
 
 ### Render the sample scene
 
