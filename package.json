@@ -1,0 +1,10 @@
+{
+  "name": "elsewhere-studio",
+  "version": "0.0.0",
+  "private": true,
+  "description": "A lightweight generative media studio for ambient visual scenes.",
+  "scripts": {
+    "test": "node scripts/validate-repo.mjs",
+    "build": "node scripts/validate-repo.mjs"
+  }
+}

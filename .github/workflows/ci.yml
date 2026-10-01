@@ -1,0 +1,44 @@
+name: Elsewhere Studio CI
+
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop, main]
+
+permissions:
+  contents: read
+
+jobs:
+  route-policy:
+    name: Branch Route Policy
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate repository and branch route
+        run: npm test
+
+  platform-ci:
+    uses: JonCunninghamDev/engineering-platform/.github/workflows/reusable-consumer-ci.yml@b107c9306161b395cbcaffebb55e47850b999560
+    with:
+      mode: ${{ github.event_name == 'pull_request' && github.base_ref == 'develop' && 'fast' || 'full' }}
+      enable_node: true
+      enable_python: true
+      node_version: '22'
+      python_version: '3.14'
+      node_cache: false
+      python_cache: false
+      node_install_command: ''
+      node_test_command: 'npm test'
+      node_build_command: 'npm run build'
+      python_install_command: ''
+      python_test_command: "python -m unittest discover -s tests -p 'test_*.py' -v"
+      artifact_retention_days: 7
