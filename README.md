@@ -172,6 +172,14 @@ renders/observatory-above-clouds.mp4
 
 The sample is 1920x1080, 30 fps, and 30 seconds long.
 
+The render wrapper prefers an installed browser before asking Remotion to download its managed Chrome Headless Shell. Detection checks `CHROME_PATH` first, then common Linux Chrome/Chromium locations including `/snap/bin/chromium`. If no local browser is found, Remotion's default managed-browser behavior is preserved.
+
+This fallback exists because some networks may block or interfere with TLS access to `remotion.media`, even while ordinary HTTPS works. On Linux, installing Chromium is therefore a valid development setup. You can also override browser selection explicitly:
+
+```bash
+CHROME_PATH=/path/to/chrome npm run render:sample
+```
+
 ### Validation commands
 
 ```bash
