@@ -6,6 +6,12 @@ const requiredFiles = [
   "engineering-policy.json",
   "docs/branching.md",
   ".github/workflows/ci.yml",
+  "package.json",
+  "tsconfig.json",
+  "src/index.ts",
+  "src/Root.tsx",
+  "src/scenes/scene-schema.ts",
+  "src/scenes/observatory-above-clouds/scene.json",
 ];
 
 for (const file of requiredFiles) {
@@ -60,13 +66,13 @@ if (eventName === "pull_request") {
   if (base === "develop") {
     if (!head || !prefixes.some((prefix) => head.startsWith(prefix))) {
       throw new Error(
-        `PRs to develop must come from an allowed temporary branch; received ${head || "<empty>"}.`
+        `PRs to develop must come from an allowed temporary branch; received ${head || "<empty>"}.`,
       );
     }
   } else if (base === "main") {
     if (head !== "develop") {
       throw new Error(
-        `Only develop may be promoted to main; received ${head || "<empty>"}.`
+        `Only develop may be promoted to main; received ${head || "<empty>"}.`,
       );
     }
   } else {

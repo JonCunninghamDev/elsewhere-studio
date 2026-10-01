@@ -1,10 +1,32 @@
 {
   "name": "elsewhere-studio",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
-  "description": "A lightweight generative media studio for ambient visual scenes.",
+  "description": "A lightweight generative media studio for creating, micro-animating, quality-checking, rendering, and publishing ambient visual scenes.",
   "scripts": {
-    "test": "node scripts/validate-repo.mjs",
-    "build": "node scripts/validate-repo.mjs"
+    "studio": "remotion studio src/index.ts",
+    "render:sample": "remotion render src/index.ts MicroScene renders/observatory-above-clouds.mp4 --codec=h264",
+    "typecheck": "tsc --noEmit",
+    "test:repo": "node scripts/validate-repo.mjs",
+    "test:scene": "tsx --test tests/*.test.ts",
+    "test": "npm run test:repo && npm run test:scene",
+    "build": "npm run typecheck && remotion bundle src/index.ts"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.532",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.532",
+    "zod": "4.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.0",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

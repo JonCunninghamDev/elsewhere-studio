@@ -24,7 +24,7 @@ jobs:
           node-version: '22'
 
       - name: Validate repository and branch route
-        run: npm test
+        run: node scripts/validate-repo.mjs
 
   platform-ci:
     uses: JonCunninghamDev/engineering-platform/.github/workflows/reusable-consumer-ci.yml@b107c9306161b395cbcaffebb55e47850b999560
@@ -36,7 +36,7 @@ jobs:
       python_version: '3.14'
       node_cache: false
       python_cache: false
-      node_install_command: ''
+      node_install_command: 'npm install --no-audit --no-fund'
       node_test_command: 'npm test'
       node_build_command: 'npm run build'
       python_install_command: ''
