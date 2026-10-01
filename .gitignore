@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.next/
+out/
+renders/
+tmp/
+.platform-ci/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+.env.*
+!.env.example
+.DS_Store
