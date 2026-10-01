@@ -1,0 +1,137 @@
+{
+  "schema_version": "engineering-policy/v1",
+  "platform": {
+    "repository": "JonCunninghamDev/engineering-platform",
+    "version": "v1.0.0",
+    "commit": "b107c9306161b395cbcaffebb55e47850b999560"
+  },
+  "repository": {
+    "policy_id": "elsewhere-studio",
+    "description": "Repository-local engineering and delivery policy for Elsewhere Studio."
+  },
+  "branches": {
+    "release": "main",
+    "integration": "develop",
+    "temporary_prefixes": [
+      "feature/",
+      "fix/",
+      "agent/"
+    ]
+  },
+  "profiles": [
+    "node-python"
+  ],
+  "capabilities": {
+    "toolchain": [
+      "runtime.node",
+      "runtime.python"
+    ],
+    "tests": [
+      "test.node",
+      "test.python"
+    ]
+  },
+  "review": {
+    "pull_requests_required": true,
+    "required_checks": [
+      "Branch Route Policy",
+      "Platform Consumer CI"
+    ],
+    "human_approval_for": [
+      "release",
+      "security",
+      "credentials",
+      "destructive_operation",
+      "backward_incompatible_change",
+      "publishing_authority"
+    ]
+  },
+  "delivery": {
+    "implementation_target": "integration",
+    "release_route": "integration_to_release",
+    "direct_release_writes": false,
+    "hotfix_route": "integration_first"
+  },
+  "permissions": {
+    "read": {
+      "tier": "autonomous",
+      "risk": "low",
+      "actions": [
+        "repository.read",
+        "issue.read",
+        "test.inspect"
+      ]
+    },
+    "bounded_write": {
+      "tier": "bounded",
+      "risk": "medium",
+      "actions": [
+        "branch.write",
+        "draft.write",
+        "test.write",
+        "issue.write"
+      ]
+    },
+    "consequential_write": {
+      "tier": "approval_required",
+      "risk": "high",
+      "actions": [
+        "release.write",
+        "credential.write",
+        "destructive.write",
+        "publish.write"
+      ]
+    }
+  },
+  "protected_paths": [
+    ".github/workflows/**",
+    "AGENTS.md",
+    "engineering-policy.json",
+    "scripts/validate-repo.mjs",
+    "docs/branching.md"
+  ],
+  "validation": {
+    "stages": [
+      {
+        "id": "node-pre-commit",
+        "stage": "pre_commit",
+        "capability": "test.node",
+        "required": true
+      },
+      {
+        "id": "python-pre-commit",
+        "stage": "pre_commit",
+        "capability": "test.python",
+        "required": true
+      },
+      {
+        "id": "node-completion",
+        "stage": "completion_gate",
+        "capability": "test.node",
+        "required": true
+      },
+      {
+        "id": "python-completion",
+        "stage": "completion_gate",
+        "capability": "test.python",
+        "required": true
+      }
+    ]
+  },
+  "execution_budgets": {
+    "max_steps": 200,
+    "max_elapsed_minutes": 60,
+    "max_retries": 2,
+    "required_dimensions": [
+      "max_steps",
+      "max_retries"
+    ]
+  },
+  "overrides": [],
+  "exceptions": [],
+  "compatibility": {
+    "policy_schema": "engineering-policy/v1",
+    "profile_schema": "repository-profile/v1",
+    "minimum_platform_version": "1.0.0"
+  }
+}
