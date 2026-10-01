@@ -5,7 +5,7 @@
   "description": "A lightweight generative media studio for creating, micro-animating, quality-checking, rendering, and publishing ambient visual scenes.",
   "scripts": {
     "studio": "remotion studio src/index.ts",
-    "render:sample": "remotion render src/index.ts MicroScene renders/observatory-above-clouds.mp4 --codec=h264",
+    "render:sample": "node scripts/render-sample.mjs",
     "typecheck": "tsc --noEmit",
     "test:repo": "node scripts/validate-repo.mjs",
     "test:scene": "tsx --test tests/*.test.ts",
