@@ -35,6 +35,12 @@ class RepositoryPolicyTests(unittest.TestCase):
         )
         self.assertEqual(self.policy["delivery"]["hotfix_route"], "integration_first")
 
+    def test_required_checks_match_github_job_names(self):
+        self.assertEqual(
+            self.policy["review"]["required_checks"],
+            ["Branch Route Policy", "platform-ci / Platform Consumer CI"],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
