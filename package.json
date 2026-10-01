@@ -9,7 +9,7 @@
     "typecheck": "tsc --noEmit",
     "test:repo": "node scripts/validate-repo.mjs",
     "test:scene": "tsx --test tests/*.test.ts",
-    "test": "npm run test:repo && npm run test:scene",
+    "test": "npm run test:repo && npm run test:scene && npm run typecheck",
     "build": "npm run typecheck && remotion bundle src/index.ts"
   },
   "dependencies": {
