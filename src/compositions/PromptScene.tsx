@@ -96,7 +96,7 @@ export const PromptScene: FC<PromptSceneProps> = ({scene}) => {
                     style={{
                       position:"absolute",
                       left:`${drop.left}%`,
-                      top:`${((drop.top + progress * 145 + drop.delay * 100) % 115) - 10}%`,
+                      top:`${((drop.top + progress * 1035 + drop.delay * 100) % 115) - 10}%`,
                       width:2,
                       height:26,
                       transform:"rotate(12deg)",
