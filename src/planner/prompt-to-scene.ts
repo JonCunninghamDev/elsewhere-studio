@@ -267,7 +267,13 @@ export const promptToSceneSpec = (prompt: string): SceneSpec => {
     },
     publishing: {
       suggestedTitle,
-      suggestedDescriptionSeed: `A ${mood.join(", ")} ${setting} ambience scene for ${mood.includes("sleep") ? "sleep and relaxation" : mood.includes("meditation") ? "meditation and relaxation" : mood.includes("focus") ? "focus and relaxation" : "relaxation"}.`,
+      suggestedDescriptionSeed: `A ${[
+        mood.includes("cozy") ? "cozy" : null,
+        mood.includes("calm") ? "calm" : null,
+        mood.includes("dreamy") ? "dreamy" : null,
+      ]
+        .filter((value): value is string => value !== null)
+        .join(", ") || "peaceful"} ${setting} ambience for ${mood.includes("sleep") ? "sleep and relaxation" : mood.includes("meditation") ? "meditation and relaxation" : mood.includes("focus") ? "focus and relaxation" : "relaxation"}.`,
       thumbnailPrompt: `${titleBase}${timeSuffix}, ${weather === "unspecified" ? "soft ambient atmosphere" : weather}, warm cinematic composition`,
     },
   };
