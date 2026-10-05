@@ -6,6 +6,7 @@ export const MotionElementKindSchema = z.enum([
   "steam",
   "clouds",
   "rain",
+  "snow",
   "lampGlow",
   "fireplace",
   "waterfall",
