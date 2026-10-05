@@ -102,3 +102,30 @@ test("modern office prompt does not invent cozy styling", () => {
   assert.equal(spec.title, "Workstation");
   assert.doesNotMatch(spec.publishing.suggestedTitle, /Cozy/);
 });
+
+
+test("publishing descriptions use natural mood language", () => {
+  const cabin = promptToSceneSpec(
+    "Quiet mountain cabin at night with a fireplace, snow falling outside the windows, and curtains moving slightly. Cozy sleep ambience. 3-hour video.",
+  );
+  assert.equal(
+    cabin.publishing.suggestedDescriptionSeed,
+    "A cozy cabin ambience for sleep and relaxation.",
+  );
+
+  const waterfall = promptToSceneSpec(
+    "Peaceful forest waterfall at sunrise. Leaves moving gently in the breeze and clouds drifting slowly. Calm meditation atmosphere. 90-minute video.",
+  );
+  assert.equal(
+    waterfall.publishing.suggestedDescriptionSeed,
+    "A calm forest waterfall ambience for meditation and relaxation.",
+  );
+
+  const office = promptToSceneSpec(
+    "Minimal modern office with a laptop and a cup of tea. Almost still, with very subtle steam and soft daylight. 1-hour focus video.",
+  );
+  assert.equal(
+    office.publishing.suggestedDescriptionSeed,
+    "A peaceful workstation ambience for focus and relaxation.",
+  );
+});
