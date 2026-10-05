@@ -60,15 +60,19 @@ const uniqueMotionElements = (
 export const promptToSceneSpec = (prompt: string): SceneSpec => {
   const normalized = prompt.trim().toLowerCase();
 
-  const setting = includesAny(normalized, [
-    "workstation",
-    "desk",
-    "office",
-    "computer",
-    "laptop",
-  ])
-    ? "home workstation"
-    : includesAny(normalized, ["cabin", "wood stove"])
+  const setting =
+    includesAny(normalized, ["forest"]) &&
+    includesAny(normalized, ["waterfall", "flowing water"])
+      ? "forest waterfall"
+      : includesAny(normalized, [
+          "workstation",
+          "desk",
+          "office",
+          "computer",
+          "laptop",
+        ])
+        ? "workstation"
+        : includesAny(normalized, ["cabin", "wood stove"])
       ? "cabin"
       : includesAny(normalized, ["cafe", "coffee shop"])
         ? "cafe"
@@ -110,6 +114,8 @@ export const promptToSceneSpec = (prompt: string): SceneSpec => {
 
   const mood = [
     includesAny(normalized, ["cozy", "warm", "comfort"]) ? "cozy" : null,
+    includesAny(normalized, ["sleep", "bedtime"]) ? "sleep" : null,
+    includesAny(normalized, ["meditation", "meditative"]) ? "meditation" : null,
     includesAny(normalized, ["calm", "peaceful", "serene", "ambient"])
       ? "calm"
       : null,
@@ -132,6 +138,9 @@ export const promptToSceneSpec = (prompt: string): SceneSpec => {
       : []),
     ...(includesAny(normalized, ["cloud", "clouds"])
       ? [{kind: "clouds" as const, priority: 1, subtlety: "subtle" as const}]
+      : []),
+    ...(includesAny(normalized, ["snow", "snowfall", "snowy"])
+      ? [{kind: "snow" as const, priority: 1, subtlety: "subtle" as const}]
       : []),
     ...(includesAny(normalized, ["lamp", "lantern", "warm light"])
       ? [{kind: "lampGlow" as const, priority: 2, subtlety: "minimal" as const}]
@@ -167,7 +176,7 @@ export const promptToSceneSpec = (prompt: string): SceneSpec => {
 
   const ambience = [
     weather === "rain" || weather === "storm" ? "light rain" : null,
-    setting.includes("workstation") || environment !== "outdoor"
+    setting === "workstation" || environment !== "outdoor"
       ? "room tone"
       : null,
     weather === "snow" ? "soft winter ambience" : null,
@@ -175,8 +184,8 @@ export const promptToSceneSpec = (prompt: string): SceneSpec => {
   ].filter((value): value is string => value !== null);
 
   const titleBase =
-    setting === "home workstation"
-      ? "Cozy Home Workstation"
+    setting === "workstation"
+      ? `${mood.includes("cozy") ? "Cozy " : ""}Workstation`
       : titleCase(setting);
 
   const timeSuffix =
@@ -198,7 +207,13 @@ export const promptToSceneSpec = (prompt: string): SceneSpec => {
   const suggestedTitle = [
     weatherPhrase,
     titleBase,
-    mood.includes("focus") ? "Ambience for Focus" : "Ambient Scene",
+    mood.includes("focus")
+      ? "Ambience for Focus"
+      : mood.includes("sleep")
+        ? "Ambience for Sleep"
+        : mood.includes("meditation")
+          ? "Ambience for Meditation"
+          : "Ambient Scene",
   ]
     .filter(Boolean)
     .join(" ")
@@ -252,7 +267,7 @@ export const promptToSceneSpec = (prompt: string): SceneSpec => {
     },
     publishing: {
       suggestedTitle,
-      suggestedDescriptionSeed: `A ${mood.join(", ")} ambient ${setting} scene designed for focus and relaxation.`,
+      suggestedDescriptionSeed: `A ${mood.join(", ")} ${setting} ambience scene for ${mood.includes("sleep") ? "sleep and relaxation" : mood.includes("meditation") ? "meditation and relaxation" : mood.includes("focus") ? "focus and relaxation" : "relaxation"}.`,
       thumbnailPrompt: `${titleBase}${timeSuffix}, ${weather === "unspecified" ? "soft ambient atmosphere" : weather}, warm cinematic composition`,
     },
   };
