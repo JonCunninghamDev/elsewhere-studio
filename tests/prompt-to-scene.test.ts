@@ -53,3 +53,52 @@ test("planner parses minute durations", () => {
   const spec = promptToSceneSpec("Calm rainy cafe for 90 minutes.");
   assert.equal(spec.duration.seconds, 5400);
 });
+
+
+test("snowy cabin plans snowfall, fireplace, curtains, and sleep ambience", () => {
+  const spec = promptToSceneSpec(
+    "Quiet mountain cabin at night with a fireplace, snow falling outside the windows, and curtains moving slightly. Cozy sleep ambience. 3-hour video.",
+  );
+
+  assert.equal(spec.visual.setting, "cabin");
+  assert.equal(spec.visual.environment, "mixed");
+  assert.equal(spec.visual.weather, "snow");
+  assert.deepEqual(spec.visual.mood, ["cozy", "sleep"]);
+  assert.equal(spec.duration.seconds, 10800);
+  assert.deepEqual(
+    spec.motion.elements.map((element) => element.kind),
+    ["snow", "fireplace", "curtains"],
+  );
+  assert.match(spec.publishing.suggestedTitle, /Sleep/);
+});
+
+test("forest waterfall remains an outdoor scene instead of falling back to a room", () => {
+  const spec = promptToSceneSpec(
+    "Peaceful forest waterfall at sunrise. Leaves moving gently in the breeze and clouds drifting slowly. Calm meditation atmosphere. 90-minute video.",
+  );
+
+  assert.equal(spec.visual.setting, "forest waterfall");
+  assert.equal(spec.visual.environment, "outdoor");
+  assert.equal(spec.visual.timeOfDay, "dawn");
+  assert.deepEqual(spec.visual.mood, ["calm", "meditation"]);
+  assert.deepEqual(
+    spec.motion.elements.map((element) => element.kind),
+    ["clouds", "waterfall", "foliage"],
+  );
+  assert.match(spec.publishing.suggestedTitle, /Meditation/);
+});
+
+test("modern office prompt does not invent cozy styling", () => {
+  const spec = promptToSceneSpec(
+    "Minimal modern office with a laptop and a cup of tea. Almost still, with very subtle steam and soft daylight. 1-hour focus video.",
+  );
+
+  assert.equal(spec.visual.setting, "workstation");
+  assert.equal(spec.motion.intensity, "minimal");
+  assert.deepEqual(
+    spec.motion.elements.map((element) => element.kind),
+    ["steam"],
+  );
+  assert.equal(spec.title, "Workstation");
+  assert.doesNotMatch(spec.publishing.suggestedTitle, /Cozy/);
+});
