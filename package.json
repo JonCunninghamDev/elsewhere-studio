@@ -11,7 +11,8 @@
     "test:scene": "tsx --test tests/*.test.ts",
     "test": "npm run test:repo && npm run test:scene && npm run typecheck",
     "build": "npm run typecheck && remotion bundle src/index.ts",
-    "plan-scene": "tsx scripts/plan-scene.ts"
+    "plan-scene": "tsx scripts/plan-scene.ts",
+    "render:prompt": "tsx scripts/render-prompt.ts"
   },
   "dependencies": {
     "@remotion/cli": "4.0.532",
