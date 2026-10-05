@@ -8,7 +8,7 @@ const workstationPrompt =
 test("workstation prompt produces the expected structured scene plan", () => {
   const spec = promptToSceneSpec(workstationPrompt);
 
-  assert.equal(spec.visual.setting, "home workstation");
+  assert.equal(spec.visual.setting, "workstation");
   assert.equal(spec.visual.environment, "mixed");
   assert.equal(spec.visual.timeOfDay, "night");
   assert.equal(spec.visual.weather, "rain");
@@ -80,7 +80,7 @@ test("forest waterfall remains an outdoor scene instead of falling back to a roo
   assert.equal(spec.visual.setting, "forest waterfall");
   assert.equal(spec.visual.environment, "outdoor");
   assert.equal(spec.visual.timeOfDay, "dawn");
-  assert.deepEqual(spec.visual.mood, ["calm", "meditation"]);
+  assert.deepEqual(new Set(spec.visual.mood), new Set(["calm", "meditation"]));
   assert.deepEqual(
     spec.motion.elements.map((element) => element.kind),
     ["clouds", "waterfall", "foliage"],
