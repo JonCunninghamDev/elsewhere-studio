@@ -2,43 +2,36 @@ import type {FC} from "react";
 import {
   AbsoluteFill,
   Img,
-  interpolate,
   staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
+import {
+  atmosphereMotion,
+  cameraMotion,
+  lightVariation,
+  normalizedProgress,
+} from "./motion";
 import type {MicroSceneProps} from "../scenes/scene-schema";
-
-const clamp = {
-  extrapolateLeft: "clamp" as const,
-  extrapolateRight: "clamp" as const,
-};
 
 export const MicroScene: FC<MicroSceneProps> = ({scene}) => {
   const frame = useCurrentFrame();
   const {durationInFrames, width} = useVideoConfig();
 
-  const progress = interpolate(
-    frame,
-    [0, Math.max(durationInFrames - 1, 1)],
-    [0, 1],
-    clamp,
-  );
+  const progress = normalizedProgress(frame, durationInFrames);
+  const camera = cameraMotion({
+    progress,
+    width,
+    cameraPush: scene.motion.cameraPush,
+    horizontalDrift: scene.motion.horizontalDrift,
+  });
+  const atmosphere = atmosphereMotion(progress);
+  const glowOpacity =
+    scene.motion.lightFlicker * Math.max(0, lightVariation(progress));
 
-  // Start slightly oversized so the drift never exposes an edge.
+  // Start slightly oversized so the subtle cyclic drift never exposes an edge.
   const baseScale = 1.045;
-  const scale = baseScale + scene.motion.cameraPush * progress;
-  const driftX = width * scene.motion.horizontalDrift * progress;
-
-  // Deterministic layered sine waves produce organic-looking light variation
-  // without random values that could make renders non-reproducible.
-  const flickerWave =
-    0.55 +
-    Math.sin(frame * 0.17) * 0.25 +
-    Math.sin(frame * 0.047 + 1.7) * 0.2;
-  const glowOpacity = scene.motion.lightFlicker * flickerWave;
-
-  const cloudDrift = interpolate(progress, [0, 1], [-6, 8], clamp);
+  const scale = baseScale + camera.scaleOffset;
 
   return (
     <AbsoluteFill
@@ -55,18 +48,29 @@ export const MicroScene: FC<MicroSceneProps> = ({scene}) => {
           width: "106%",
           height: "106%",
           objectFit: "cover",
-          transform: `translate3d(${driftX}px, 0, 0) scale(${scale})`,
+          transform: `translate3d(${camera.driftX}px, 0, 0) scale(${scale})`,
           transformOrigin: "50% 52%",
         }}
       />
 
       <AbsoluteFill
         style={{
-          opacity: scene.motion.atmosphere,
-          transform: `translate3d(${cloudDrift}%, 0, 0)`,
+          opacity: scene.motion.atmosphere * 0.7,
+          transform: `translate3d(${atmosphere.farX}%, ${atmosphere.farY}%, 0)`,
           background:
-            "radial-gradient(ellipse at 22% 65%, rgba(226,232,240,0.30) 0%, rgba(226,232,240,0.08) 30%, transparent 55%), radial-gradient(ellipse at 76% 72%, rgba(203,213,225,0.22) 0%, rgba(203,213,225,0.06) 32%, transparent 58%)",
-          filter: "blur(18px)",
+            "radial-gradient(ellipse at 70% 68%, rgba(203,213,225,0.20) 0%, rgba(203,213,225,0.05) 34%, transparent 62%)",
+          filter: "blur(28px)",
+          mixBlendMode: "screen",
+        }}
+      />
+
+      <AbsoluteFill
+        style={{
+          opacity: scene.motion.atmosphere,
+          transform: `translate3d(${atmosphere.nearX}%, ${atmosphere.nearY}%, 0)`,
+          background:
+            "radial-gradient(ellipse at 20% 66%, rgba(226,232,240,0.28) 0%, rgba(226,232,240,0.08) 30%, transparent 58%), radial-gradient(ellipse at 78% 73%, rgba(226,232,240,0.18) 0%, rgba(226,232,240,0.04) 34%, transparent 62%)",
+          filter: "blur(20px)",
           mixBlendMode: "screen",
         }}
       />
